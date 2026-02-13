@@ -66,7 +66,16 @@ pnpm start:backend    # http://localhost:8000
 
 ```bash
 docker-compose up      # Starts PostgreSQL + backend + frontend
+docker-compose up -d   # Detached mode
+docker-compose down    # Stop and remove containers
 ```
+
+Each app has its own multi-stage Dockerfile:
+
+- **Frontend** (`apps/frontend/Dockerfile`) — Builds on `node:20-alpine`, compiles Tailwind CSS, bundles the NestJS app, and includes a health check on `/health`.
+- **Backend** (`apps/backend/Dockerfile`) — Builds on `python:3.11-slim`, installs dependencies with `uv`, and includes a health check on `/health`.
+
+The `docker-compose.yml` orchestrates three services: **PostgreSQL 15**, **backend** (port 8000), and **frontend** (port 3000), with hot-reload via bind-mounted source directories.
 
 ---
 
@@ -75,6 +84,7 @@ docker-compose up      # Starts PostgreSQL + backend + frontend
 ```
 ├── apps/
 │   ├── frontend/              # NestJS application
+│   │   ├── Dockerfile         # Multi-stage Docker build
 │   │   ├── src/
 │   │   │   ├── modules/       # Feature modules (chat, clients, …)
 │   │   │   ├── styles/        # Tailwind CSS
@@ -83,6 +93,7 @@ docker-compose up      # Starts PostgreSQL + backend + frontend
 │   │   └── public/            # Static assets (CSS/JS)
 │   │
 │   └── backend/               # FastAPI application
+│       ├── Dockerfile         # Multi-stage Docker build
 │       ├── app/
 │       │   ├── api/           # Route handlers
 │       │   ├── models/        # SQLAlchemy models
