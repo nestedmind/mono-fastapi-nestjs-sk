@@ -55,7 +55,7 @@ cp .env.example .env
 
 ```bash
 # Both frontend and backend in parallel
-pnpm dev
+pnpm start
 
 # Or individually
 pnpm start:frontend   # http://localhost:3000
